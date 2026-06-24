@@ -78,8 +78,9 @@ analysis:
 # =============================================================================
 # Model Tracking & Registry (MLflow)
 # =============================================================================
-# tracking_uri: URI for the tracking server. Leave empty to default to local ./mlruns.
-#   Note: Production/Registry usage requires a database-backed URI.
+# tracking_uri: tracking server URI. MLFLOW_TRACKING_URI env var overrides this.
+#   Empty + no env var: notebooks fall back to a local SQLite store synced to Drive.
+#   Registry/remote use requires a database-backed URI (e.g. a hosted MLflow server).
 mlflow:
   tracking_uri: ""
   experiment: "barcelona_price_tier"

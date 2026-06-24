@@ -165,7 +165,7 @@ def train(spark: SparkSession, config: dict, df: DataFrame | None = None,
     if df is None:
         df = load_training_df(spark, config)
     fingerprint = data_fingerprint(df)
-    # Stable sort so the seeded split is identical here and in validation.ipynb;
+    # Stable sort so the seeded split is identical here and in the B.3 results cell;
     # sort on all columns to not depend on which id columns Part A kept.
     df = df.orderBy(*df.columns)
     train_df, val_df = df.randomSplit([split, 1 - split], seed=seed)
