@@ -5,8 +5,8 @@
 project:
   name: lab3-data-engineering
 
-# Directory containing raw source datasets.
-source_datasets_dir: "../Lab3-Assignment/datasets"
+# Where the original source datasets live (shipped with the assignment).
+source_datasets_dir: "data/source"
 
 # Data lake storage zones (Medallion architecture).
 zones:

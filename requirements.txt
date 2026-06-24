@@ -17,3 +17,6 @@ notebook>=7.0
 
 # Testing Framework.
 pytest>=8.0
+
+# Part C: Airflow for pipeline orchestration
+apache-airflow==2.9.3

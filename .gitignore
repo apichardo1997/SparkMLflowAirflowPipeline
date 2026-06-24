@@ -24,6 +24,10 @@ __pycache__/
 .Rhistory
 .RData
 
+# MLFlow runs
+mlruns/
+mlartifacts/
+
 # Environments
 .venv/
 venv/
