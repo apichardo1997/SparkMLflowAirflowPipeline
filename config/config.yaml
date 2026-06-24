@@ -1,39 +1,43 @@
-# Lab 3 - Data Engineering Backbone configuration (Section A)
-# Central config: paths and parameters. Paths are relative to the project root.
+# Data Engineering Pipeline Configuration
+# Defines core paths, Spark settings, and data layer parameters.
+# Note: All paths are relative to the project root directory.
 
 project:
-  name: lab3-data-engineering
+  name: barcelona-data-engineering
 
-# Where the original source datasets live (shipped with the assignment).
-source_datasets_dir: "../Lab3-Assignment/datasets"
+# Directory containing raw source datasets.
+source_datasets_dir: "../datasets"
 
-# The three data-lake zones on the local file system.
+# Data lake storage zones (Medallion architecture).
 zones:
   landing: "data/landing"
   formatted: "data/formatted"
   exploitation: "data/exploitation"
 
-# Output format for Formatted/Exploitation. parquet needs no extra deps; delta
-# requires delta-spark, same partitioning.
+# Target output format for intermediate and serving layers.
+# Supported options: 'parquet' (native) or 'delta' (requires delta-spark dependencies).
 output_format: "parquet"
 
 spark:
-  app_name: "lab3-data-engineering"
+  app_name: "barcelona-data-pipeline"
   configs:
     spark.sql.session.timeZone: "UTC"
     spark.sql.shuffle.partitions: "8"
 
-# --- A.1 dataset selection ---------------------------------------------------
-# Three Barcelona Open Data sources (one CSV, two JSON). Per dataset:
-#   format: csv | json_array (multiLine) | json_lines (one object per line)
-#   path_glob: source location under source_datasets_dir
-#   partition_by: Formatted-zone partition key
+# =============================================================================
+# Dataset Ingestion Configuration
+# =============================================================================
+# Configures source data definitions for Barcelona Open Data sources.
+# Properties:
+#   format: 'csv' | 'json_array' (multiLine) | 'json_lines' (single object per line)
+#   path_glob: Relative path to source data under source_datasets_dir
+#   partition_by: Partitioning strategy for the formatted zone
 datasets:
   income:
     format: csv
     path_glob: "income/*.csv"
     partition_by: ["year"]
-    no_consta_code: 99            # Codi_Barri sentinel for the "No consta" total row, dropped in Formatted
+    no_consta_code: 99            # Sentinel value representing 'No consta' (Unknown); filtered during formatting.
   density:
     format: json_array
     path_glob: "density/density_opendata_neighborhood_2.json"
@@ -43,33 +47,39 @@ datasets:
     path_glob: "price_opendata/price_opendata_neighborhood.json"
     partition_by: ["year"]
 
-# --- A.1 analysis definition -------------------------------------------------
-# PriceTier-3way: neighborhood-year housing price-tier classifier.
-# table: exploitation output (Part A) consumed by Part B.
-# join_keys: keys all datasets share for integration.
-# target: per-year price/m2 tercile {low,mid,high}.
-# feature_columns: numeric model inputs (income_rank kept in the Part A table but
-#   excluded here: redundant with rfd_index).
-# categorical_columns: OneHotEncoded; empty by default (Codi_Districte optional).
+# =============================================================================
+# Feature Engineering & Target Definition
+# =============================================================================
+# Defines parameters for the housing price-tier classification model.
+#
+# table: Target table name for the exploitation layer.
+# join_keys: Primary keys for integrating upstream datasets.
+# target: Dependent variable representing price per square meter terciles.
+# feature_columns: Continuous variables for model ingestion.
+# categorical_columns: Discrete variables requiring encoding (e.g., OneHotEncoding).
 analysis:
   table: "price_tier_by_neighborhood_year"
   join_keys: ["Codi_Barri", "year"]
   target: "price_tier"
-  # A.5 exploitation build params.
+
+  # Exploitation layer build parameters
   year_min: 2013
   year_max: 2017
-  tier_source: "PerMeter"          # price/m2 column terciled into the target, then dropped
+  tier_source: "PerMeter"         # Source metric converted to target terciles, subsequently dropped.
   tier_classes: ["low", "mid", "high"]
-  income_rank_source: "rfd_index"  # column percent-ranked per year into income_rank
-  # B.1 model params.
+  income_rank_source: "rfd_index" # Source column used to calculate annual percentile rankings.
+
+  # Model training parameters
   model_name: "barcelona_price_tier"
   feature_columns: ["rfd_index", "population", "density_gross", "density_net", "surface"]
   categorical_columns: []
   train_fraction: 0.8
 
-# --- B.2 MLflow --------------------------------------------------------------
-# tracking_uri: set in the Colab notebook to sqlite on Drive (registry needs a DB
-# backend). Left blank here so local/test runs use the default ./mlruns store.
+# =============================================================================
+# Model Tracking & Registry (MLflow)
+# =============================================================================
+# tracking_uri: URI for the tracking server. Leave empty to default to local ./mlruns.
+#   Note: Production/Registry usage requires a database-backed URI.
 mlflow:
   tracking_uri: ""
   experiment: "barcelona_price_tier"
