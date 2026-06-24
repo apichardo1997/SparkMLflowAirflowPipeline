@@ -31,5 +31,4 @@ bash scripts/run_local.sh        # A.3 → A.4 → A.5
 python -m src.training           # B.1 + B.2
 ```
 
-All paths and parameters live in `config/config.yaml`; no values are hardcoded.
-
+All paths and parameters live in `config/config.yaml`
