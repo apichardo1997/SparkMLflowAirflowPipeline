@@ -11,6 +11,7 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
+from airflow.utils.email import send_email
 
 # ---------------------------------------------------------------------
 # Part C: Pipeline Orchestration
@@ -220,3 +221,85 @@ if __name__ == "__main__":
     # Allows quick local debugging:
     # python dags/lab3_pipeline_dag.py
     dag.test()
+
+## ---------------------------------------------------------------------------------------------- 
+## Code for email alert system (left this in here as evidence of our attempt; we do not include it
+## in the final code to avoid you having to configure your computer to run our code)
+
+# ALERT_EMAIL = os.getenv("LAB3_ALERT_EMAIL")
+
+
+# def failure_alert(context):
+#     """Send a meaningful alert when an Airflow task fails."""
+#     task_instance = context["task_instance"]
+#     dag_run = context.get("dag_run")
+
+#     subject = f"[Lab 3 Airflow] FAILED: {task_instance.dag_id}.{task_instance.task_id}"
+
+#     html_content = f"""
+#     <h3>Lab 3 pipeline task failed</h3>
+#     <p><b>DAG:</b> {task_instance.dag_id}</p>
+#     <p><b>Task:</b> {task_instance.task_id}</p>
+#     <p><b>Run:</b> {dag_run.run_id if dag_run else "unknown"}</p>
+#     <p><b>Execution date:</b> {context.get("logical_date")}</p>
+#     <p><b>Try number:</b> {task_instance.try_number}</p>
+#     <p><b>Log URL:</b> <a href="{task_instance.log_url}">{task_instance.log_url}</a></p>
+#     """
+
+#     if ALERT_EMAIL:
+#         send_email(
+#             to=ALERT_EMAIL,
+#             subject=subject,
+#             html_content=html_content,
+#         )
+#     else:
+#         logging.warning(
+#             "AIRFLOW ALERT: task '%s' failed in DAG '%s'. Set LAB3_ALERT_EMAIL "
+#             "and Airflow SMTP settings to enable email alerts.",
+#             task_instance.task_id,
+#             task_instance.dag_id,
+#         )
+
+
+# def success_alert(context):
+#     """Send a completion alert when the full pipeline succeeds."""
+#     task_instance = context["task_instance"]
+#     dag_run = context.get("dag_run")
+
+#     subject = f"[Lab 3 Airflow] SUCCESS: {task_instance.dag_id}"
+
+#     html_content = f"""
+#     <h3>Lab 3 pipeline completed successfully</h3>
+#     <p><b>DAG:</b> {task_instance.dag_id}</p>
+#     <p><b>Final task:</b> {task_instance.task_id}</p>
+#     <p><b>Run:</b> {dag_run.run_id if dag_run else "unknown"}</p>
+#     <p><b>Execution date:</b> {context.get("logical_date")}</p>
+#     <p><b>Log URL:</b> <a href="{task_instance.log_url}">{task_instance.log_url}</a></p>
+#     """
+
+#     if ALERT_EMAIL:
+#         send_email(
+#             to=ALERT_EMAIL,
+#             subject=subject,
+#             html_content=html_content,
+#         )
+#     else:
+#         logging.info(
+#             "AIRFLOW COMPLETION ALERT: DAG '%s' completed successfully. "
+#             "Set LAB3_ALERT_EMAIL and Airflow SMTP settings to enable email alerts.",
+#             task_instance.dag_id,
+#         )
+
+# default_args = {
+#     "owner": "lab3-group",
+#     "depends_on_past": False,
+#     "retries": 2,
+#     "retry_delay": timedelta(minutes=5),
+#     "execution_timeout": timedelta(minutes=30),
+#     "on_failure_callback": failure_alert,
+# }
+
+# pipeline_complete = EmptyOperator(
+#     task_id="pipeline_complete",
+#     on_success_callback=success_alert,
+# )
