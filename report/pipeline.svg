@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 500" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4C566A"/>
+    </marker>
+    <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B89A4A"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#2E3440" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- ============ CONTAINERS ============ -->
+  <rect x="20" y="70" width="200" height="300" rx="12" fill="#F7F9FC" stroke="#C8D0DE" stroke-width="1.2"/>
+  <text x="120" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#4C566A">SOURCES</text>
+
+  <rect x="280" y="60" width="580" height="310" rx="12" fill="#F7F9FC" stroke="#C8D0DE" stroke-width="1.2"/>
+  <text x="570" y="82" text-anchor="middle" font-size="13" font-weight="700" fill="#4C566A">DATA LAKE</text>
+
+  <rect x="890" y="60" width="390" height="310" rx="12" fill="#F7F9FC" stroke="#C8D0DE" stroke-width="1.2"/>
+  <text x="1085" y="82" text-anchor="middle" font-size="13" font-weight="700" fill="#4C566A">DATA ANALYSIS · PART B</text>
+
+  <!-- ============ SOURCE NODES ============ -->
+  <g filter="url(#shadow)">
+    <rect x="45" y="115" width="150" height="62" rx="8" fill="#ECEFF4" stroke="#4C566A" stroke-width="1.3"/>
+    <text x="120" y="151" text-anchor="middle" font-size="14" font-weight="600" fill="#2E3440">Dataset 1</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="45" y="189" width="150" height="62" rx="8" fill="#ECEFF4" stroke="#4C566A" stroke-width="1.3"/>
+    <text x="120" y="218" text-anchor="middle" font-size="14" font-weight="600" fill="#2E3440">Dataset 2</text>
+    <text x="120" y="236" text-anchor="middle" font-size="11" fill="#4C566A">JSON</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="45" y="263" width="150" height="62" rx="8" fill="#ECEFF4" stroke="#4C566A" stroke-width="1.3"/>
+    <text x="120" y="299" text-anchor="middle" font-size="14" font-weight="600" fill="#2E3440">Dataset 3</text>
+  </g>
+
+  <!-- ============ LAKE ZONES ============ -->
+  <g filter="url(#shadow)">
+    <rect x="305" y="150" width="160" height="155" rx="8" fill="#E5E9F0" stroke="#5E81AC" stroke-width="1.5"/>
+    <text x="385" y="200" text-anchor="middle" font-size="15" font-weight="700" fill="#2E3440">Landing</text>
+    <text x="385" y="232" text-anchor="middle" font-size="11.5" fill="#4C566A">raw · Parquet</text>
+    <text x="385" y="250" text-anchor="middle" font-size="11.5" fill="#4C566A">partitioned by</text>
+    <text x="385" y="266" text-anchor="middle" font-size="11.5" fill="#4C566A">load_date</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="500" y="150" width="160" height="155" rx="8" fill="#D8E3E8" stroke="#5E81AC" stroke-width="1.5"/>
+    <text x="580" y="200" text-anchor="middle" font-size="15" font-weight="700" fill="#2E3440">Formatted</text>
+    <text x="580" y="232" text-anchor="middle" font-size="11.5" fill="#4C566A">cleaned · typed</text>
+    <text x="580" y="250" text-anchor="middle" font-size="11.5" fill="#4C566A">uniform schema</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="695" y="150" width="160" height="155" rx="8" fill="#CFE3D6" stroke="#A3BE8C" stroke-width="1.5"/>
+    <text x="775" y="200" text-anchor="middle" font-size="15" font-weight="700" fill="#2E3440">Exploitation</text>
+    <text x="775" y="232" text-anchor="middle" font-size="11.5" fill="#4C566A">joined · features</text>
+    <text x="775" y="250" text-anchor="middle" font-size="11.5" fill="#4C566A">+ target</text>
+    <text x="775" y="266" text-anchor="middle" font-size="11.5" fill="#4C566A">ML-ready</text>
+  </g>
+
+  <!-- ============ ML NODES ============ -->
+  <g filter="url(#shadow)">
+    <rect x="915" y="150" width="175" height="95" rx="8" fill="#F2E2CE" stroke="#D08770" stroke-width="1.5"/>
+    <text x="1002" y="190" text-anchor="middle" font-size="15" font-weight="700" fill="#2E3440">spark.ml</text>
+    <text x="1002" y="212" text-anchor="middle" font-size="11.5" fill="#4C566A">train/val split</text>
+    <text x="1002" y="228" text-anchor="middle" font-size="11.5" fill="#4C566A">2 models</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1110" y="150" width="150" height="95" rx="8" fill="#F2E2CE" stroke="#D08770" stroke-width="1.5"/>
+    <text x="1185" y="190" text-anchor="middle" font-size="15" font-weight="700" fill="#2E3440">MLflow</text>
+    <text x="1185" y="212" text-anchor="middle" font-size="11.5" fill="#4C566A">params · metrics</text>
+    <text x="1185" y="228" text-anchor="middle" font-size="11.5" fill="#4C566A">best model</text>
+  </g>
+
+  <!-- ============ AIRFLOW ============ -->
+  <g filter="url(#shadow)">
+    <rect x="305" y="415" width="785" height="55" rx="8" fill="#FDF3DB" stroke="#EBCB8B" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="697" y="440" text-anchor="middle" font-size="14" font-weight="700" fill="#2E3440">Airflow DAG · Part C</text>
+    <text x="697" y="458" text-anchor="middle" font-size="11.5" fill="#7A6420">schedule · task dependencies · retries · failure alerts</text>
+  </g>
+
+  <!-- ============ MAIN FLOW ARROWS ============ -->
+  <g stroke="#4C566A" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <path d="M195,146 L300,170"/>
+    <path d="M195,220 L300,225"/>
+    <path d="M195,294 L300,280"/>
+    <path d="M465,227 L496,227"/>
+    <path d="M660,227 L691,227"/>
+    <path d="M855,227 L911,197"/>
+    <path d="M1090,197 L1106,197"/>
+  </g>
+
+  <!-- edge labels -->
+  <g font-size="12" font-weight="600" fill="#2E3440" text-anchor="middle">
+    <rect x="218" y="186" width="78" height="18" rx="4" fill="#F7F9FC"/>
+    <text x="257" y="199">A.3 Ingest</text>
+    <text x="482" y="216">A.4</text>
+    <text x="677" y="216">A.5</text>
+    <rect x="853" y="178" width="58" height="17" rx="4" fill="#F7F9FC"/>
+    <text x="882" y="190">B.1</text>
+    <text x="1098" y="186">B.2</text>
+  </g>
+
+  <!-- ============ AIRFLOW ORCHESTRATION (dashed up) ============ -->
+  <g stroke="#B89A4A" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#arrowDash)">
+    <path d="M385,415 L385,308"/>
+    <path d="M580,415 L580,308"/>
+    <path d="M775,415 L775,308"/>
+    <path d="M1002,415 L1002,248"/>
+  </g>
+</svg>

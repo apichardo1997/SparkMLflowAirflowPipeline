@@ -1,0 +1,75 @@
+# Lab 3 - Data Engineering Backbone configuration (Section A)
+# Central config: paths and parameters. Paths are relative to the project root.
+
+project:
+  name: lab3-data-engineering
+
+# Where the original source datasets live (shipped with the assignment).
+source_datasets_dir: "../Lab3-Assignment/datasets"
+
+# The three data-lake zones on the local file system.
+zones:
+  landing: "data/landing"
+  formatted: "data/formatted"
+  exploitation: "data/exploitation"
+
+# Output format for Formatted/Exploitation. parquet needs no extra deps; delta
+# requires delta-spark, same partitioning.
+output_format: "parquet"
+
+spark:
+  app_name: "lab3-data-engineering"
+  configs:
+    spark.sql.session.timeZone: "UTC"
+    spark.sql.shuffle.partitions: "8"
+
+# --- A.1 dataset selection ---------------------------------------------------
+# Three Barcelona Open Data sources (one CSV, two JSON). Per dataset:
+#   format: csv | json_array (multiLine) | json_lines (one object per line)
+#   path_glob: source location under source_datasets_dir
+#   partition_by: Formatted-zone partition key
+datasets:
+  income:
+    format: csv
+    path_glob: "income/*.csv"
+    partition_by: ["year"]
+    no_consta_code: 99            # Codi_Barri sentinel for the "No consta" total row, dropped in Formatted
+  density:
+    format: json_array
+    path_glob: "density/density_opendata_neighborhood_2.json"
+    partition_by: ["year"]
+  price:
+    format: json_lines
+    path_glob: "price_opendata/price_opendata_neighborhood.json"
+    partition_by: ["year"]
+
+# --- A.1 analysis definition -------------------------------------------------
+# PriceTier-3way: neighborhood-year housing price-tier classifier.
+# table: exploitation output (Part A) consumed by Part B.
+# join_keys: keys all datasets share for integration.
+# target: per-year price/m2 tercile {low,mid,high}.
+# feature_columns: numeric model inputs (income_rank kept in the Part A table but
+#   excluded here: redundant with rfd_index).
+# categorical_columns: OneHotEncoded; empty by default (Codi_Districte optional).
+analysis:
+  table: "price_tier_by_neighborhood_year"
+  join_keys: ["Codi_Barri", "year"]
+  target: "price_tier"
+  # A.5 exploitation build params.
+  year_min: 2013
+  year_max: 2017
+  tier_source: "PerMeter"          # price/m2 column terciled into the target, then dropped
+  tier_classes: ["low", "mid", "high"]
+  income_rank_source: "rfd_index"  # column percent-ranked per year into income_rank
+  # B.1 model params.
+  model_name: "barcelona_price_tier"
+  feature_columns: ["rfd_index", "population", "density_gross", "density_net", "surface"]
+  categorical_columns: []
+  train_fraction: 0.8
+
+# --- B.2 MLflow --------------------------------------------------------------
+# tracking_uri: set in the Colab notebook to sqlite on Drive (registry needs a DB
+# backend). Left blank here so local/test runs use the default ./mlruns store.
+mlflow:
+  tracking_uri: ""
+  experiment: "barcelona_price_tier"
