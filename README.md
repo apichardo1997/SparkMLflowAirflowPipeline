@@ -13,7 +13,6 @@ notebooks/   training.ipynb, validation.ipynb
 dags/        Airflow DAG (C)
 data/        landing/ formatted/ exploitation/  (generated, gitignored)
 report/      report.md (A.1, A.2, B.3, assumptions)
-tests/
 ```
 
 ## Setup
