@@ -28,55 +28,8 @@ We predict the price tier rather than an income or density tier for two reasons.
 We also reviewed the unemployment, incidence, and real-estate listing datasets and did not use them. The unemployment and incidence files are truncated samples, returning about one hundred records per year and, for unemployment, a single month, with the 2015 unemployment file empty, which leaves too little signal at the neighbourhood-year grain. The listing dataset covers only 2020 and 2021, so it does not overlap the income and price series.
 
 ## A.2 Architecture
+PNG will insert when we pdf 
 
-```mermaid
-flowchart LR
-    classDef src fill:#ECEFF4,stroke:#4C566A,stroke-width:1px,color:#2E3440;
-    classDef land fill:#E5E9F0,stroke:#5E81AC,stroke-width:1.5px,color:#2E3440;
-    classDef fmt fill:#D8E3E8,stroke:#5E81AC,stroke-width:1.5px,color:#2E3440;
-    classDef exp fill:#CFE3D6,stroke:#A3BE8C,stroke-width:1.5px,color:#2E3440;
-    classDef ml fill:#F2E2CE,stroke:#D08770,stroke-width:1.5px,color:#2E3440;
-    classDef orch fill:#FDF3DB,stroke:#EBCB8B,stroke-width:1.5px,color:#2E3440,stroke-dasharray:4 3;
-
-    subgraph SRC[" Sources "]
-        direction TB
-        D1[(Income · CSV)]
-        D2[/Density · JSON/]
-        D3[/Price · JSON/]
-    end
-
-    subgraph LAKE[" Data Lake "]
-        direction LR
-        L["<b>Landing</b><br/><font size=1>raw · Parquet<br/>partitioned by load_date</font>"]
-        F["<b>Formatted</b><br/><font size=1>cleaned · typed<br/>uniform schema</font>"]
-        E["<b>Exploitation</b><br/><font size=1>joined · features<br/>+ target · ML-ready</font>"]
-    end
-
-    subgraph ML[" Data Analysis · Part B "]
-        direction TB
-        T["<b>spark.ml</b><br/><font size=1>train/val split<br/>2 models</font>"]
-        MF[("MLflow<br/><font size=1>params · metrics<br/>best model</font>")]
-    end
-
-    SRC ==>|"A.3 Ingest"| L
-    L ==>|"A.4 Format"| F
-    F ==>|"A.5 Exploit"| E
-    E ==>|"B.1 Train + validate"| T
-    T ==>|"B.2 Track + deploy"| MF
-
-    AF{{"Airflow DAG · Part C<br/><font size=1>schedule · dependencies · retries</font>"}}
-    AF -.-> L
-    AF -.-> F
-    AF -.-> E
-    AF -.-> T
-
-    class D1,D2,D3 src;
-    class L land;
-    class F fmt;
-    class E exp;
-    class T,MF ml;
-    class AF orch;
-```
 
 ## B.3 Results
 
