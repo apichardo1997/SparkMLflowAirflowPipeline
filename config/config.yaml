@@ -3,10 +3,10 @@
 # Note: All paths are relative to the project root directory.
 
 project:
-  name: barcelona-data-engineering
+  name: lab3-data-engineering
 
 # Directory containing raw source datasets.
-source_datasets_dir: "../datasets"
+source_datasets_dir: "../Lab3-Assignment/datasets"
 
 # Data lake storage zones (Medallion architecture).
 zones:
@@ -19,7 +19,7 @@ zones:
 output_format: "parquet"
 
 spark:
-  app_name: "barcelona-data-pipeline"
+  app_name: "lab3-data-engineering"
   configs:
     spark.sql.session.timeZone: "UTC"
     spark.sql.shuffle.partitions: "8"
