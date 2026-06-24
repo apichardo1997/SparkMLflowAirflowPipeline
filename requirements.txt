@@ -1,19 +1,19 @@
-# Lab 3 - Data Engineering Backbone (Section A)
-# Install into a fresh virtual environment:  pip install -r requirements.txt
-# Requires a working Java (JDK 8/11/17) on the machine for Spark to start.
+# Pipeline Dependencies
+# Installation: pip install -r requirements.txt (use an isolated virtual environment).
+# Prerequisite: A valid Java installation (JDK 8/11/17) is required for PySpark execution.
 
 pyspark>=3.5,<3.6
 pyyaml>=6.0
-setuptools>=68  # provides distutils shim for Python 3.12+
+setuptools>=68  # Provides distutils shim for Python 3.12+ compatibility.
 
-# Optional: enable Delta Lake output (set output_format: delta in config.yaml).
+# Enable Delta Lake storage format (requires setting output_format: delta in config.yaml).
 # delta-spark==3.2.0
 
-# Data Analysis Backbone (Section B): training, tracking, plotting.
+# Model training, experiment tracking, and visualization dependencies
 mlflow>=2.10
 pandas>=2.0
 seaborn>=0.13
 notebook>=7.0
 
-# Tests.
+# Testing Framework.
 pytest>=8.0
