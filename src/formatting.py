@@ -1,6 +1,7 @@
-"""A.4 Formatting (Formatted zone). Canonical, analysis-independent cleaning per
-source: cast types, standardize column names to the goal contract, drop placeholder
-rows. Writes data/formatted/<name> as Parquet partitioned by year. Idempotent."""
+"""Data Formatting Layer (Formatted Zone).
+Performs canonical, analysis-independent data cleansing per source system:
+type casting, column standardization, and placeholder removal. Writes output
+to the formatted zone as partitioned Parquet. Execution is idempotent."""
 from __future__ import annotations
 
 import argparse
@@ -16,9 +17,9 @@ DATASETS = ["income", "density", "price"]
 
 
 def _format_income(df: DataFrame, config: dict) -> DataFrame:
-    """RFD income index per neighborhood-year. Drops the 'No consta' total row
-    (configured Codi_Barri sentinel) and rows whose RFD placeholder ('-') fails
-    the numeric cast."""
+    """Processes the RFD income index per neighborhood-year.
+    Removes sentinel values representing missing data ('No consta' total row)
+    and filters out records containing invalid numeric placeholders."""
     code = config["datasets"]["income"]["no_consta_code"]
     out = df.withColumn("rfd_index", F.col("rfd_raw").cast("double"))
     out = out.filter((F.col("Codi_Barri") != code) & F.col("rfd_index").isNotNull())
@@ -30,7 +31,7 @@ def _format_income(df: DataFrame, config: dict) -> DataFrame:
 
 
 def _format_density(df: DataFrame, config: dict) -> DataFrame:
-    """Population, gross/net density and surface per neighborhood-year."""
+    """Standardizes population, gross/net density, and surface area metrics per neighborhood-year."""
     return df.select(
         "Codi_Barri",
         F.col("Any").alias("year"),
@@ -42,8 +43,9 @@ def _format_density(df: DataFrame, config: dict) -> DataFrame:
 
 
 def _format_price(df: DataFrame, config: dict) -> DataFrame:
-    """Flatten the nested per-year info[] to (neigh_name, year, PerMeter). Keyed by
-    name: price_id is not the official code, so Codi_Barri is resolved by name in A.5."""
+    """Flattens nested yearly price information into a structured tabular format.
+    Note: The source key is non-standard; downstream integration layers resolve
+    the official neighborhood code via string matching."""
     rec = df.select("neigh_name", F.explode("info").alias("rec"))
     out = rec.select(
         "neigh_name",
@@ -61,7 +63,8 @@ _TRANSFORMS = {
 
 
 def format_dataset(spark: SparkSession, config: dict, name: str, force: bool = False) -> None:
-    """Clean one landed source and write it partitioned by year. Incrementality: full OVERWRITE."""
+    """Cleanses a single ingested source dataset and writes it to the formatted zone.
+    Data is partitioned by year. Employs a full overwrite strategy to ensure idempotency."""
     out = zone_path(config, "formatted") / name
     if zone_is_fresh(out) and not force:
         print(f"[A.4] {name}: formatted already fresh, skipping")
